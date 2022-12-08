@@ -210,6 +210,7 @@ function routes(app,dbe,lms,accounts)
         }
         else
         {
+            //PDF send kar
             pdfParse(req.files.pdfFile).then(result =>{
                 console.log(result.text)
                 res.send(result.text)
