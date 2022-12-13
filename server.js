@@ -20,7 +20,7 @@ if (typeof web3 !== 'undefined') {
 const LMS = contract(artifacts)
 LMS.setProvider(web3.currentProvider)
 
-mongodb.connect('mongodb://localhost:27017',{ useUnifiedTopology: true }, async(err,client)=>{
+mongodb.connect('mongodb+srv://dbUser:dbUser@cluster0.dwdoiai.mongodb.net/?retryWrites=true&w=majority',{ useUnifiedTopology: true }, async(err,client)=>{
     if(client){
         console.log('Done')
     }
@@ -34,7 +34,7 @@ mongodb.connect('mongodb://localhost:27017',{ useUnifiedTopology: true }, async(
     //console.log(lms)
     //const lms = LMS.at(contract_address) for remote nodes deployed on ropsten or rinkeby
     routes(app,db, lms, accounts)
-    app.listen(process.env.PORT || 8082, () => {
-        console.log('listening on port '+ (process.env.PORT || 8082));
+    app.listen(process.env.PORT || 3002, () => {
+        console.log('listening on port '+ (process.env.PORT || 3002));
      })
 })

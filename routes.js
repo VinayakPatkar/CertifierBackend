@@ -35,13 +35,15 @@ function routes(app,dbe,lms,accounts)
     app.get('/login',(req,res)=>{
         res.status(200).sendFile(path.join(__dirname,'public','index.html'))
     })
-
+    app.get('/verify',(req,res)=>{
+        res.status(200).sendFile(path.join(__dirname,'public','verify.html'))
+    })
 
     app.post("/login",(req,res)=>{
         const {username,password} = req.body
         console.log(req.body)
-        UserAdminHardCoded = 'Vinayak';
-        UserAdminPasswordHardCoded  = 'Patkar'
+        UserAdminHardCoded = 'Admin';
+        UserAdminPasswordHardCoded  = 'admin'
         if(username == UserAdminHardCoded && password == UserAdminPasswordHardCoded)
         {
             res.status(200).sendFile(path.join(__dirname,'public','addstudent.html'))
@@ -92,7 +94,7 @@ function routes(app,dbe,lms,accounts)
                 {
                     console.log('Some error occured to store the value in Blockchain')
                 }
-                sgMail.setApiKey('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');
+                sgMail.setApiKey('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');
                 
                 let HTMLContent = `
                 <h1> Marksheet 2022-23</h1><br>
@@ -103,89 +105,109 @@ function routes(app,dbe,lms,accounts)
                 <strong> Mark3 : ${Mark3} </strong> <br>
                 <strong> Mark4 : ${Mark4} </strong> <br>
                 <strong> Mark5 : ${Mark5} </strong> <br>`;
-                //console.log(HTMLContent);
-                
-                const sendPDF = async(email) =>{
-                    let file = { content: HTMLContent };
-                    //console.log(file)
-                    let options = { format: "A4" };
-                    const pdfBuffer = html_to_pdf.generatePdf(file, options);
-                    if(pdfBuffer)
-                    {
-                        console.log('pdfbuffer constructed');
-                    }
-                    else
-                    {
-                        console.log('Could not construct pdfBuffer')
-                    }
-                    const msg = {
-                    to: email,
-                    from: 'karrajput3948@gmail.com', // Use the email address or domain you verified above
-                    subject: 'Marksheet 2022-23',
-                    text: 'Marksheet',
-                    Attachments : [
-                    {
-                        content: pdfBuffer.toString("base64"),
-                        filename: "Certificate.pdf",
-                        type: "application/pdf",
-                        disposition: "attachment",
-                
-                    }],
-                    html:  HTMLContent,
-                    
-                    };
-                    const msgBool= msg;
-                    if(msgBool)
-                    {
-                        console.log('msg is created')
-                    }
-                    else
-                    {
-                        console.log('msg is not created')
-                    }
-                    //ES6
-                    sgMail
-                    .send(msg)
-                    .then(() => {}, error => {
-                        console.error(error);
-    
-                        if (error.response) {
-                        console.error(error.response.body)
-                        }
-                    });
-                    //ES8
-                    /*(async () => {
-                    try {
-                        await sgMail.send(msg);
-                    } catch (error) {
-                        console.error(error);
-    
-                        if (error.response) {
-                        console.error(error.response.body)
-                        }
-                    }
-                    })();*/
-                }
-                const MailBool = sendPDF(Email);
-                if(MailBool)
+                const nodemailer = require('nodemailer');
+                const {google} = require('googleapis');
+                const CLIENT_ID = '787846123554-hdadcrlmr8prolpfrqn9gjvob2k0nshd.apps.googleusercontent.com';
+                const CLIENT_SECRET = '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';
+                const REDIRECT_URL = 'https://developers.google.com/oauthplayground';
+                const REFRESH_TOKEN = '1//048oCJdihTOV3CgYIARAAGAQSNwF-L9IryQ8kTqCCp5QKqREgUTqK8wWo-KoaQur0-nMwwy4T6SJ75PHdRk5TvUxQVQxQoz0zfYM';
+                const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URL);
+                oAuth2Client.setCredentials({refresh_token:REFRESH_TOKEN});
+                async function sendMail()
                 {
-                    console.log('Mail Sent');
+                    try
+                    {
+                        const accessToken = await oAuth2Client.getAccessToken();
+                        //console.log(accessToken)
+                        const transport = nodemailer.createTransport({
+                            service:'gmail',
+                            auth:{
+                                type:'OAuth2',
+                                user:'verifiertheoriginal@gmail.com',
+                                clientId:CLIENT_ID,
+                                clientSecret:CLIENT_SECRET,
+                                refreshToken:REFRESH_TOKEN,
+                                accessToken:'ya29.a0AeTM1ifprnGPWk9aIgoBSldYEXcHl9vpvqyr9Eg8jf3mqyLmj3qLUB3hH12xQejWukfjSTBr4yRoVqPB1rA4ev7vsxtkyMroUPnv5SCb8R4h8V_UCTGKYJJEYAQDFgfC43tLEyUC2hM8VDjneBJLZweT8ACCaCgYKAfsSARASFQHWtWOm-eJ0dCZpashDck_Oamhjkg0163'
+                            }
+                        })
+                        let file = { content: HTMLContent };
+                        //console.log(file)
+                        let options = { format: "A4" };
+                        const pdfBuffer = await html_to_pdf.generatePdf(file, options);
+                        console.log(pdfBuffer)
+                        if(pdfBuffer)
+                        {
+                            console.log('pdfbuffer constructed');
+                        }
+                        else
+                        {
+                            console.log('Could not construct pdfBuffer')
+                        }
+                        const mailOptions = {
+                            from : 'verifiertheoriginal@gmail.com',
+                            to : Email,
+                            subject : "Marksheet 2022-23",
+                            
+                            attachments: [{
+
+                                filename: `Marksheet.pdf`,
+                                content: pdfBuffer
+                            
+                            }],
+                            html:  HTMLContent,
+                        }
+                        const result = await transport.sendMail(mailOptions);
+                        return result;
+                    }catch(error){
+                        return error
+                    }
+                
                 }
-                else
-                {
-                    console.log('Some problem occured wile sending the mail');
-                }
-                //Bool giving true but message not arriving
+                sendMail().then(result=>console.log('Email sent',result))
+                .catch(error=>console.log(error.message));
+
                 res.status(200).send('The certificate is stored in blockchain,db and the mail is sent')
             }
         })
     })
-
+    const pdfParse = require('pdf-parse')
 
     app.post('/verifyMarksheet',async(req,res)=>{
-        const {name,Rollno,Email,Mark1,Mark2,Mark3,Mark4,Mark5} = req.body;
+        console.log(req)
+        pdfParse(req).then(result =>{
+                console.log(result.text)
+        })
+        let content = "";
+        res.send('yes')
+        return
+        // if(!req.files && !req.files.pdfFile){
+        //     res.status(400);
+        //     res.send('pdf not found')
+        // }
+        // pdfParse(req.files.pdfFile).then(result =>{
+        //     console.log(result.text)
+        //     res.send(result.text)
+        //     content = result.text;
+        //     let contentArray = content.split(" ");
+        //     let rollno = parseInt(contentArray[7]);
+        //     let mark1 = contentArray[10];
+        //     let mark2 = contentArray[13];
+        //     let mark3 = contentArray[16];
+        //     let mark4 = contentArray[19];
+        //     let mark5 = contentArray[22];
+        //     // console.log(`${rollno} = ${mark1} = ${mark2} = ${mark3} = ${mark4} = ${mark5}`);
+        //     let totContent = rollno + mark1 + mark2 + mark3 + mark4 + mark5;
+        //     console.log(totContent)
+        //     let hash = SHA256(totContent)
+        //     console.log(hash);
+        //     // compare the hash if same res.send(true)
+        // })
+        
+        
+        
+        // const {name,Rollno,Email,Mark1,Mark2,Mark3,Mark4,Mark5} = req.body;
         //const Hash = Rollno.toString()+Mark1.toString()+Mark2.toString()+Mark3.toString()+Mark4.toString()+Mark5.toString();
-        const Hash = '597025c6eb58efa4ffad35172360a56b';
+        const Hash = 'b38bf3ed653cf286c499037540cac898';
         console.log(Hash);
         let data = await lms.RetrieveData(Rollno,{from:accounts[0]});
         console.log(data);
