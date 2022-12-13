@@ -28,16 +28,12 @@ mongodb.connect('mongodb+srv://dbUser:dbUser@cluster0.dwdoiai.mongodb.net/?retry
         console.log('Done')
     }
     await client.connect()
-    //console.log(client.db())
     const db =client.db('Student')
-    //console.log(db)
     const accounts = await web3.eth.getAccounts();
-    //console.log(accounts)
+    console.log(accounts[0])
     const lms = await LMS.deployed();
-    //console.log(lms)
-    //const lms = LMS.at(contract_address) for remote nodes deployed on ropsten or rinkeby
     routes(app,db, lms, accounts)
-    app.listen(process.env.PORT || 3000, () => {
-        console.log('listening on port '+ (process.env.PORT || 3000));
+    app.listen(process.env.PORT || 3005, () => {
+        console.log('listening on port '+ (process.env.PORT || 3005));
      })
 })

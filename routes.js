@@ -1,15 +1,9 @@
 const path = require('path')
 const mongoose = require('mongoose')
-const SHA256 = require("crypto-js/sha256");
-const sgMail = require('@sendgrid/mail')
 const html_to_pdf = require('html-pdf-node');
 const crypto = require('crypto')
 function routes(app,dbe,lms,accounts){
     let db = dbe.collection('StudentData');
-    /*if(db)
-    {
-        console.log('DB collection done')
-    }*/
     app.get('/',(req,res)=>{
         res.status(200).sendFile(path.join(__dirname,'public','homepage.html'))
     })
@@ -23,15 +17,11 @@ function routes(app,dbe,lms,accounts){
 
     app.post("/login",(req,res)=>{
         const {username,password} = req.body
-        console.log(req.body)
         UserAdminHardCoded = 'Admin';
         UserAdminPasswordHardCoded  = 'admin'
-        if(username == UserAdminHardCoded && password == UserAdminPasswordHardCoded)
-        {
+        if(username == UserAdminHardCoded && password == UserAdminPasswordHardCoded){
             res.status(200).sendFile(path.join(__dirname,'public','addstudent.html'))
-        }
-        else
-        {
+        }else{
             res.status(401).send('Admin not approved')
         }
     })
@@ -41,13 +31,10 @@ function routes(app,dbe,lms,accounts){
         const {name,Rollno,Email,Mark1,Mark2,Mark3,Mark4,Mark5} = req.body;
         console.log(name,Rollno,Email,Mark1,Mark2,Mark3,Mark4,Mark5)
         db.findOne({Rollno},async (err,student)=>{
-            if(student)
-            {
+            if(student){
                 console.log('Already Present');
                 res.status(401).send('Already there');
-            }
-            else
-            {   
+            }else{   
                 let dataBase = false, blockchain = false, emailSent = false;
                 console.log('Not there');
                 const Rollnostr = Rollno.toString();
@@ -94,7 +81,6 @@ function routes(app,dbe,lms,accounts){
                     try
                     {
                         const accessToken = await oAuth2Client.getAccessToken();
-                        //console.log(accessToken)
                         const transport = nodemailer.createTransport({
                             service:'gmail',
                             auth:{
@@ -152,10 +138,6 @@ function routes(app,dbe,lms,accounts){
         console.log(Rollno)
         console.log(Hash)
         let data = await lms.RetrieveData(parseInt(Rollno),{from:accounts[0]});
-            console.log(data);
-            console.log(data[1])
-            console.log(typeof(Hash));
-            console.log(typeof(data[1]));
             if(Hash == data[1])
             {
                 console.log('The certificate is valid');
@@ -169,6 +151,7 @@ function routes(app,dbe,lms,accounts){
       }
     app.post('/verifyMarksheet',async(req,res)=>{
         let content = "";
+        let invalidMarksheet = false;
         console.log(req.files)
         if(!req.files && !req.files.pdfFile){
             res.status(400);
@@ -181,14 +164,20 @@ function routes(app,dbe,lms,accounts){
             content = result.text;
             let contentArray = content.split(" ");
             console.log(contentArray)
+            let mark1,mark2,mark3,mark4,mark5;
             rollno = parseInt(contentArray[7]);
             console.log('roll: '+ rollno)
-            Rollno = rollno
-            let mark1 = parseInt(contentArray[10]);
-            let mark2 = parseInt(contentArray[13]);
-            let mark3 = parseInt(contentArray[16]);
-            let mark4 = parseInt(contentArray[19]);
-            let mark5 = parseInt(contentArray[22]);
+            mark1 = parseInt(contentArray[10]);
+            mark2 = parseInt(contentArray[13]);
+            mark3 = parseInt(contentArray[16]);
+            mark4 = parseInt(contentArray[19]);
+            mark5 = parseInt(contentArray[22]);
+            console.log(Number.isInteger(rollno))
+            if(!Number.isInteger(rollno)|| !Number.isInteger(mark1) || !Number.isInteger(mark2)|| !Number.isInteger(mark3) || !Number.isInteger(mark4) || !Number.isInteger(mark5)){
+                invalidMarksheet = true
+                return
+            }
+            
             console.log(`${rollno} = ${mark1} = ${mark2} = ${mark3} = ${mark4} = ${mark5}`);
             let ContentToHash = rollno.toString()+mark1.toString()+mark2.toString()+mark3.toString()+mark4.toString()+mark5.toString();
             console.log(ContentToHash)
@@ -198,8 +187,12 @@ function routes(app,dbe,lms,accounts){
           
 
         })
-        let resultValid = await checkValid(hash,rollno);
-        console.log(resultValid)
+        let resultValid = 'invalid';
+        if( !invalidMarksheet){
+            resultValid = await checkValid(hash,rollno);
+            console.log(resultValid)
+        }
+        
         if(resultValid == 'valid'){
             console.log('working')
             res.status(200).send('The certificate is Valid')
