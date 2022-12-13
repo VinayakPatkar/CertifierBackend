@@ -37,7 +37,7 @@ mongodb.connect('mongodb+srv://dbUser:dbUser@cluster0.dwdoiai.mongodb.net/?retry
     //console.log(lms)
     //const lms = LMS.at(contract_address) for remote nodes deployed on ropsten or rinkeby
     routes(app,db, lms, accounts)
-    app.listen(process.env.PORT || 3009, () => {
-        console.log('listening on port '+ (process.env.PORT || 3009));
+    app.listen(process.env.PORT || 3000, () => {
+        console.log('listening on port '+ (process.env.PORT || 3000));
      })
 })
