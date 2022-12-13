@@ -171,90 +171,146 @@ function routes(app,dbe,lms,accounts)
         })
     })
     const pdfParse = require('pdf-parse')
-
-    app.post('/verifyMarksheet',async(req,res)=>{
-        console.log(req)
-        pdfParse(req).then(result =>{
-                console.log(result.text)
-        })
-        let content = "";
-        res.send('yes')
-        return
-        // if(!req.files && !req.files.pdfFile){
-        //     res.status(400);
-        //     res.send('pdf not found')
-        // }
-        // pdfParse(req.files.pdfFile).then(result =>{
-        //     console.log(result.text)
-        //     res.send(result.text)
-        //     content = result.text;
-        //     let contentArray = content.split(" ");
-        //     let rollno = parseInt(contentArray[7]);
-        //     let mark1 = contentArray[10];
-        //     let mark2 = contentArray[13];
-        //     let mark3 = contentArray[16];
-        //     let mark4 = contentArray[19];
-        //     let mark5 = contentArray[22];
-        //     // console.log(`${rollno} = ${mark1} = ${mark2} = ${mark3} = ${mark4} = ${mark5}`);
-        //     let totContent = rollno + mark1 + mark2 + mark3 + mark4 + mark5;
-        //     console.log(totContent)
-        //     let hash = SHA256(totContent)
-        //     console.log(hash);
-        //     // compare the hash if same res.send(true)
-        // })
-        
-        
-        
-        // const {name,Rollno,Email,Mark1,Mark2,Mark3,Mark4,Mark5} = req.body;
-        //const Hash = Rollno.toString()+Mark1.toString()+Mark2.toString()+Mark3.toString()+Mark4.toString()+Mark5.toString();
-        const Hash = 'b38bf3ed653cf286c499037540cac898';
-        console.log(Hash);
+    async function checkValid(Hash, Rollno) {
+        console.log(Rollno)
+        console.log(Hash)
         let data = await lms.RetrieveData(Rollno,{from:accounts[0]});
-        console.log(data);
-        console.log(data[1])
-        console.log(typeof(Hash));
-        console.log(typeof(data[1]));
-        if(Hash == data[1])
-        {
-            console.log('The certificate is valid');
-            res.status(200).send('Valid certificate')
-        }
-        else
-        {
-            console.log('Invalid certificate');
-            res.status(401).send('Invalid certificate not found in blockchain')
-        }
-        /*let content = "";
-        if(!req.files && !req.files.pdfFile)
-        {
+            console.log(data);
+            console.log(data[1])
+            console.log(typeof(Hash));
+            console.log(typeof(data[1]));
+            if(Hash == data[1])
+            {
+                console.log('The certificate is valid');
+                return 'valid'
+            }
+            else
+            {
+                console.log('Invalid certificate');
+                return 'invalid'
+            }
+      }
+    app.post('/verifyMarksheet',async(req,res)=>{
+        let content = "";
+        console.log(req.files)
+        if(!req.files && !req.files.pdfFile){
             res.status(400);
             res.send('pdf not found')
         }
-        else
-        {
-            //PDF send kar
-            pdfParse(req.files.pdfFile).then(result =>{
-                console.log(result.text)
-                res.send(result.text)
-                content = result.text;
-                let contentArray = content.split(" ");
-                let rollno = parseInt(contentArray[7]);
-                let mark1 = contentArray[10];
-                let mark2 = contentArray[13];
-                let mark3 = contentArray[16];
-                let mark4 = contentArray[19];
-                let mark5 = contentArray[22];
-                // console.log(`${rollno} = ${mark1} = ${mark2} = ${mark3} = ${mark4} = ${mark5}`);
-                let totContent = rollno + mark1 + mark2 + mark3 + mark4 + mark5;
-                console.log(totContent)
-                let hash = SHA256(totContent)
-                console.log(hash);
-                // compare the hash if same res.send(true)
-            })
-        }*/
+        let Hash = '';
+        let Rollno ='';
+        await pdfParse(req.files.pdfFile).then(result =>{
+            console.log(result.text)
+            // res.send(result.text)
+            content = result.text;
+            let contentArray = content.split(" ");
+            console.log(contentArray)
+            let rollno = parseInt(contentArray[6]);
+            console.log('roll: '+ rollno)
+            Rollno = rollno
+            let mark1 = parseInt(contentArray[9]);
+            let mark2 = parseInt(contentArray[12]);
+            let mark3 = parseInt(contentArray[15]);
+            let mark4 = parseInt(contentArray[18]);
+            let mark5 = parseInt(contentArray[21]);
+            console.log(`${rollno} = ${mark1} = ${mark2} = ${mark3} = ${mark4} = ${mark5}`);
+            let ContentToHash = rollno.toString()+mark1.toString()+mark2.toString()+mark3.toString()+mark4.toString()+mark5.toString();
+            console.log(ContentToHash)
+            let hash = crypto.createHash('md5').update(ContentToHash).digest('hex')
+            
+            console.log(hash);
+            Hash = hash
+            checkValid(hash,rollno)
+            // compare the hash if same res.send(true)
+            
+        })
+        // console.log(Hash)
+        
+    })
+    
+    // app.post('/verifyMarksheet',async(req,res)=>{
+    //     console.log(req)
+    //     // pdfParse(req).then(result =>{
+    //     //         console.log(result.text)
+    //     // })
+    //     let content = "";
+    //     res.send('yes')
+    //     return
+    //     // if(!req.files && !req.files.pdfFile){
+    //     //     res.status(400);
+    //     //     res.send('pdf not found')
+    //     // }
+    //     // pdfParse(req.files.pdfFile).then(result =>{
+    //     //     console.log(result.text)
+    //     //     res.send(result.text)
+    //     //     content = result.text;
+    //     //     let contentArray = content.split(" ");
+    //     //     let rollno = parseInt(contentArray[7]);
+    //     //     let mark1 = contentArray[10];
+    //     //     let mark2 = contentArray[13];
+    //     //     let mark3 = contentArray[16];
+    //     //     let mark4 = contentArray[19];
+    //     //     let mark5 = contentArray[22];
+    //     //     // console.log(`${rollno} = ${mark1} = ${mark2} = ${mark3} = ${mark4} = ${mark5}`);
+    //     //     let totContent = rollno + mark1 + mark2 + mark3 + mark4 + mark5;
+    //     //     console.log(totContent)
+    //     //     let hash = SHA256(totContent)
+    //     //     console.log(hash);
+    //     //     // compare the hash if same res.send(true)
+    //     // })
+        
+        
+        
+    //     // const {name,Rollno,Email,Mark1,Mark2,Mark3,Mark4,Mark5} = req.body;
+    //     //const Hash = Rollno.toString()+Mark1.toString()+Mark2.toString()+Mark3.toString()+Mark4.toString()+Mark5.toString();
+    //     const Hash = 'b38bf3ed653cf286c499037540cac898';
+    //     console.log(Hash);
+    //     let data = await lms.RetrieveData(Rollno,{from:accounts[0]});
+    //     console.log(data);
+    //     console.log(data[1])
+    //     console.log(typeof(Hash));
+    //     console.log(typeof(data[1]));
+    //     if(Hash == data[1])
+    //     {
+    //         console.log('The certificate is valid');
+    //         res.status(200).send('Valid certificate')
+    //     }
+    //     else
+    //     {
+    //         console.log('Invalid certificate');
+    //         res.status(401).send('Invalid certificate not found in blockchain')
+    //     }
+    //     /*let content = "";
+    //     if(!req.files && !req.files.pdfFile)
+    //     {
+    //         res.status(400);
+    //         res.send('pdf not found')
+    //     }
+    //     else
+    //     {
+    //         //PDF send kar
+    //         pdfParse(req.files.pdfFile).then(result =>{
+    //             console.log(result.text)
+    //             res.send(result.text)
+    //             content = result.text;
+    //             let contentArray = content.split(" ");
+    //             let rollno = parseInt(contentArray[7]);
+    //             let mark1 = contentArray[10];
+    //             let mark2 = contentArray[13];
+    //             let mark3 = contentArray[16];
+    //             let mark4 = contentArray[19];
+    //             let mark5 = contentArray[22];
+    //             // console.log(`${rollno} = ${mark1} = ${mark2} = ${mark3} = ${mark4} = ${mark5}`);
+    //             let totContent = rollno + mark1 + mark2 + mark3 + mark4 + mark5;
+    //             console.log(totContent)
+    //             let hash = SHA256(totContent)
+    //             console.log(hash);
+    //             // compare the hash if same res.send(true)
+    //         })
+    //     }*/
         
     
-    })
+    // })
 
 
 }

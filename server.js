@@ -6,9 +6,12 @@ const Web3 = require('web3');
 const mongodb = require('mongodb').MongoClient
 const contract = require('truffle-contract');
 const artifacts = require('./build/Certification.json');
-
-
+const fileUpload = require("express-fileupload");
+const cors = require('cors')
+app.use(fileUpload());
 app.use(express.json())
+app.use(express.urlencoded())
+app.use(cors())
 
 
 if (typeof web3 !== 'undefined') {
@@ -34,7 +37,7 @@ mongodb.connect('mongodb+srv://dbUser:dbUser@cluster0.dwdoiai.mongodb.net/?retry
     //console.log(lms)
     //const lms = LMS.at(contract_address) for remote nodes deployed on ropsten or rinkeby
     routes(app,db, lms, accounts)
-    app.listen(process.env.PORT || 3002, () => {
-        console.log('listening on port '+ (process.env.PORT || 3002));
+    app.listen(process.env.PORT || 3009, () => {
+        console.log('listening on port '+ (process.env.PORT || 3009));
      })
 })
