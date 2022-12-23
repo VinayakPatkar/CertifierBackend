@@ -8,10 +8,14 @@ const contract = require('truffle-contract');
 const artifacts = require('./build/Certification.json');
 const fileUpload = require("express-fileupload");
 const cors = require('cors')
+var favicon = require('serve-favicon');
+var path = require('path')
+app.use(favicon(path.join(__dirname, 'public', 'images/website.png')))
 app.use(fileUpload());
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(cors())
+app.use(express.static(__dirname + '/public'));
 
 
 if (typeof web3 !== 'undefined') {

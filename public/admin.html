@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verfier|Admin Login</title>
+        <link href="./style/admin.css"  rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg ">
+            <a class="navbar-brand" href="#">
+                <img src="images/logo.png" width="100" height="auto" alt="">
+              </a>
+            <div class="collapse navbar-collapse" id="navbarText">
+              <ul class="navbar-nav mr-auto">
+
+              </ul>
+              <span class="navbar-text">
+                <button class="btn btn-warning navButton"> Generate Marksheet</button>
+              </span>
+            </div>
+          </nav>
+    <div style="display: flex;align-items: center;justify-content: center;font-size: 20px;flex-direction: column;">
+        <div class="adminDiv">
+            <h1>Admin Login</h1>
+            <form action="/login" method="POST" style="margin-top: 15px;">
+                <label for="username" style="margin-top: 10px;">Username: &nbsp;</label>
+                <input type="text" name="username" id="" style="margin-top: 10px;"/><br>
+                <label for="password" style="margin-top: 10px;">Password : &nbsp;</label>
+                <input type="password" name="password" id="" style="margin-top: 10px;"/><br>
+                <input type="submit" class="btn btn-warning navButton" value="Login" style="margin-top:1.5rem"/>
+            </form>
+        </div>
+    </div>  
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    </body>
+</html>

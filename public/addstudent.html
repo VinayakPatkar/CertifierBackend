@@ -4,28 +4,81 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="./style/admin.css"  rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Generate Marksheet | Verifier</title>
 </head>
 <body>
-    <h2>Student details:</h2>
+    <nav class="navbar navbar-expand-lg ">
+        <a class="navbar-brand" href="#">
+            <img src="images/logo.png" width="100" height="auto" alt="">
+          </a>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+
+          </ul>
+          <span class="navbar-text">
+            <button class="btn btn-warning navButton"> Generate Marksheet</button>
+          </span>
+        </div>
+      </nav>
+      <div style="display: flex;align-items: center;justify-content: center;font-size: 1rem;flex-direction: column;">
+        <div style="width: 80%; text-align: center;">
+    <h2 style="padding: 1rem;padding-bottom: 3rem;">Marksheet Details:</h2>
     <form action="/addstudent" method="POST" style="margin-top: 15px;">
-        <label for="name" style="margin-top: 10px;">Full Name: &nbsp;</label>
-        <input type="text" name="name" id="" style="margin-top: 10px;" placeholder="eg- abc xyz"/><br>
-        <label for="Rollno" style="margin-top: 10px;">Rollno: &nbsp;</label>
-        <input type="number" name="Rollno" id="" style="margin-top: 10px;"/><br>
-        <label for="Email" style="margin-top: 10px;">Email: &nbsp;</label>
-        <input type="email" name="Email" id="" style="margin-top: 10px;"/><br>
-        <label for="Mark1" style="margin-top: 10px;">Mark 1: &nbsp;</label>
-        <input type="number" name="Mark1" id="" style="margin-top: 10px;"/><br>
-        <label for="Mark2" style="margin-top: 10px;">Mark2: &nbsp;</label>
-        <input type="number" name="Mark2" id="" style="margin-top: 10px;"/><br>
-        <label for="Mark3" style="margin-top: 10px;">Mark3: &nbsp;</label>
-        <input type="number" name="Mark3" id="" style="margin-top: 10px;"/><br>
-        <label for="Mark4" style="margin-top: 10px;">Mark4: &nbsp;</label>
-        <input type="number" name="Mark4" id="" style="margin-top: 10px;"/><br>
-        <label for="Mark5" style="margin-top: 10px;">Mark5: &nbsp;</label>
-        <input type="number" name="Mark5" id="" style="margin-top: 10px;"/><br>
-        <input type="submit" value="Submit Marks" style="margin-top:10px;transform:translateX(110px)"/>
+        <div class="form-group row">
+            <label for="fname" class="col-sm-2 col-form-label">First Name: &nbsp;</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="fname"/><br>
+            </div>
+            <label for="lname" class="col-sm-2 col-form-label">Last Name: &nbsp;</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="lname"/><br>
+            </div>
+
+        </div>
+        <div class="form-group row">
+            <label for="Rollno" class="col-sm-2 col-form-label">Roll no: &nbsp;</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" name="Rollno" /><br>
+            </div>
+            <label for="Email" class="col-sm-2 col-form-label">Email:</label>
+            <div class="col-sm-4">
+                <input type="email" class="form-control" name="Email"/><br>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="Mark1" class="col-sm-2 col-form-label">Mark 1: &nbsp;</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" name="Mark1" /><br>
+            </div>
+            <label for="Mark2" class="col-sm-2 col-form-label">Mark 2: &nbsp;</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" name="Mark2" /><br>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="Mark3" class="col-sm-2 col-form-label">Mark 3: &nbsp;</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" name="Mark3" /><br>
+            </div>
+            <label for="Mark4" class="col-sm-2 col-form-label">Mark 4: &nbsp;</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" name="Mark4" /><br>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="Mark5" class="col-sm-2 col-form-label">Mark 5: &nbsp;</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" name="Mark5" /><br>
+            </div>
+        </div>
+        <input type="submit" class="btn btn-warning navButton" value="Submit Marks" />
     </form>
+    </div></div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 </body>
 </html>

@@ -9,7 +9,7 @@ function routes(app,dbe,lms,accounts){
     })
 
     app.get('/login',(req,res)=>{
-        res.status(200).sendFile(path.join(__dirname,'public','index.html'))
+        res.status(200).sendFile(path.join(__dirname,'public','admin.html'))
     })
     app.get('/verify',(req,res)=>{
         res.status(200).sendFile(path.join(__dirname,'public','verify.html'))
@@ -28,7 +28,9 @@ function routes(app,dbe,lms,accounts){
 
     app.post('/addstudent',async(req,res)=>
     {
-        const {name,Rollno,Email,Mark1,Mark2,Mark3,Mark4,Mark5} = req.body;
+        const {fname,lname,Rollno,Email,Mark1,Mark2,Mark3,Mark4,Mark5} = req.body;
+        console.log(fname+lname)
+        let name = fname + " "+ lname
         console.log(name,Rollno,Email,Mark1,Mark2,Mark3,Mark4,Mark5)
         db.findOne({Rollno},async (err,student)=>{
             if(student){
@@ -120,8 +122,11 @@ function routes(app,dbe,lms,accounts){
                 
                 }
                 await sendMail().then(result=>{
-                    console.log('Email sent',result);
-                    emailSent = true
+                    console.log('Email sent');
+                    console.log(result.code)
+                    if(result.code != 400){
+                        emailSent = true
+                    }
                 })
                 .catch(error=>console.log(error.message));
                 if(emailSent && blockchain && dataBase){
